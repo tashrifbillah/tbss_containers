@@ -23,6 +23,3 @@ steps:
     docker build -t $(imageName) -f Dockerfile.centos7 --build-arg USER=$(user) --build-arg CWD=$(wd) .
   displayName: 'Build a docker image'
 
-- script: |
-    docker run --cpus=2.00 --memory="8G" $(imageName) /bin/bash ${wd}/tbss/install.sh test
-  displayName: 'Test the built image'
