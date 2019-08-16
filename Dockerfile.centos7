@@ -1,0 +1,61 @@
+FROM centos:7.5.1804
+
+MAINTAINER Tashrif Billah <tbillah@bwh.harvard.edu>
+
+# set up user and working directory
+ARG USER=pnlbwh
+ENV USER="$USER"
+ARG CWD=/root
+WORKDIR $CWD
+ENV PWD="$CWD"
+
+# libraries and commands for FSL
+RUN yum -y update \
+    && yum -y install epel-release wget file bzip2 openblas-devel libmng libpng12
+
+# install FSL
+RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -O fslinstaller.py
+RUN python fslinstaller.py -V 5.0.11 -d `pwd`/fsl-5.0.11-centos7 -p
+
+# setup FSL environment
+ENV FSLDIR="$PWD/fsl-5.0.11-centos7"
+ENV PATH="$FSLDIR/bin/:$PATH" \
+	FSLMULTIFILEQUIT=TRUE \
+	FSLGECUDAQ=cuda.q \
+	FSLTCLSH="$FSLDIR/bin/fsltclsh" \
+	FSLWISH="$FSLDIR/bin/fslwish" \
+	FSLOUTPUTTYPE=NIFTI_GZ
+
+
+# apply patch
+RUN $FSLDIR/fslpython/bin/conda install -y -n fslpython -c conda-forge deprecation==1.*
+
+
+# install python
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+	-O Miniconda3-latest-Linux-x86_64.sh \
+    && /bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p miniconda3/
+
+ENV CONDA_EXE="$PWD/miniconda3/bin/conda" \
+	CONDA_PREFIX="$PWD/miniconda3" \
+	CONDA_PYTHON_EXE="$PWD/miniconda3/bin/python" \
+	PATH="$PWD/miniconda3/bin/:$PATH"
+
+#RUN echo "$PATH"
+# install ANTs=2.3.0
+RUN conda install -y -c pnlbwh ants
+ENV ANTSPATH="$PWD/miniconda3/bin/"
+
+
+# libraries and commands for TBSS
+RUN yum -y install git bc unzip gcc
+
+# clone TBSS
+RUN git clone https://github.com/pnlbwh/tbss.git
+
+# install TBSS
+RUN /bin/bash tbss/install.sh setup
+
+# run tests
+# RUN /bin/bash tbss/install.sh test
+
