@@ -21,5 +21,5 @@ steps:
   displayName: 'Build a docker image'
 
 - script: |
-    docker run --ncpus=4.00 --memory="8G" $(imageName) /bin/bash ${wd}/tbss/install.sh test
+    docker run --cpus=4.00 --memory="8G" $(imageName) /bin/bash ${wd}/tbss/install.sh test
   displayName: 'Test the built image'
