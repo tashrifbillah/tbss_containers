@@ -27,12 +27,6 @@ ENV PATH="$FSLDIR/bin/:$PATH" \
 	FSLOUTPUTTYPE=NIFTI_GZ
 
 
-# apply patch
-RUN rm -rf $FSLDIR/fslpython && \
-    $FSLDIR/etc/fslconf/fslpython_install.sh -f $FSLDIR && \
-    $FSLDIR/fslpython/bin/conda install -y -n fslpython -c conda-forge deprecation==1.*
-
-
 # install python
 RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda3-latest-Linux-x86_64.sh && \
     /bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p miniconda3/
