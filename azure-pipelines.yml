@@ -21,10 +21,7 @@ variables:
 steps:
 - script: |
     docker build -t $(imageName) -f Dockerfile.centos7 --build-arg USER=$(user) --build-arg CWD=$(wd) .
-  displayName: 'Build a docker image'
-  failOnStderr: true
-- script: |
     docker run --rm -ti $(imageName) /tbss/install.sh test
-  displayName: 'Test the image'
+  displayName: 'Build a docker image'
   failOnStderr: true
 
