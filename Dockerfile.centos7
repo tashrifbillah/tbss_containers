@@ -15,10 +15,10 @@ RUN yum -y update \
 
 # install FSL
 RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -O fslinstaller.py
-RUN python fslinstaller.py -V 5.0.11 -d `pwd`/fsl-5.0.11-centos7 -p
+RUN python fslinstaller.py -V 6.0.1 -d `pwd`/fsl-6.0.1-centos7 -p
 
 # setup FSL environment
-ENV FSLDIR="$PWD/fsl-5.0.11-centos7"
+ENV FSLDIR="$PWD/fsl-6.0.1-centos7"
 ENV PATH="$FSLDIR/bin/:$PATH" \
 	FSLMULTIFILEQUIT=TRUE \
 	FSLGECUDAQ=cuda.q \
@@ -57,5 +57,5 @@ RUN git clone https://github.com/pnlbwh/tbss.git
 RUN /bin/bash tbss/install.sh setup
 
 # run tests
-# RUN /bin/bash tbss/install.sh test
+RUN /bin/bash tbss/install.sh test
 

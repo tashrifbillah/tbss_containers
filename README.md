@@ -1,11 +1,10 @@
-
 # pnlbwh/tbss containers
 
-[![Build Status](https://dev.azure.com/tbillah/tbssDemo/_apis/build/status/tashrifbillah.tbss_containers.2?branchName=master)](https://dev.azure.com/tbillah/tbssDemo/_build/latest?definitionId=4&branchName=master)
+[![Build Status](https://dev.azure.com/tbillah/tbssDemo/_apis/build/status/tashrifbillah.tbss_containers?branchName=master)](https://dev.azure.com/tbillah/tbssDemo/_build/latest?definitionId=3&branchName=master)
 
 This repository is set up to test Microsoft Azure Pipeline integrability for `pnlbwh/tbss` pipeline. It contains recipes for Docker and Singularity containers. The recipes build following software:
 
-fsl-5.0.11-centos7
+fsl-6.0.1-centos7
 
 https://github.com/pnbwh/tbss.git : master branch
 
