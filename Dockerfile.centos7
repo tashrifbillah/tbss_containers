@@ -10,12 +10,12 @@ WORKDIR $CWD
 ENV PWD="$CWD"
 
 # libraries and commands for FSL
-RUN yum -y update \
-    && yum -y install epel-release wget file bzip2 openblas-devel libmng libpng12
+RUN yum -y update && \
+    yum -y install epel-release wget file bzip2 openblas-devel libmng libpng12
 
 # install FSL
-RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -O fslinstaller.py
-RUN python fslinstaller.py -V 6.0.1 -d `pwd`/fsl-6.0.1-centos7 -p
+RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -O fslinstaller.py && \
+    python fslinstaller.py -V 6.0.1 -d `pwd`/fsl-6.0.1-centos7 -p
 
 # setup FSL environment
 ENV FSLDIR="$PWD/fsl-6.0.1-centos7"
@@ -28,13 +28,14 @@ ENV PATH="$FSLDIR/bin/:$PATH" \
 
 
 # apply patch
-RUN $FSLDIR/fslpython/bin/conda install -y -n fslpython -c conda-forge deprecation==1.*
+RUN rm -rf $FSLDIR/fslpython && \
+    $FSLDIR/etc/fslconf/fslpython_install.sh -f $FSLDIR && \
+    $FSLDIR/fslpython/bin/conda install -y -n fslpython -c conda-forge deprecation==1.*
 
 
 # install python
-RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-	-O Miniconda3-latest-Linux-x86_64.sh \
-    && /bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p miniconda3/
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda3-latest-Linux-x86_64.sh && \
+    /bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p miniconda3/
 
 ENV CONDA_EXE="$PWD/miniconda3/bin/conda" \
 	CONDA_PREFIX="$PWD/miniconda3" \
