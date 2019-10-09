@@ -11,15 +11,15 @@ ENV PWD="$CWD"
 
 # libraries and commands for FSL
 RUN yum -y update > /dev/null 2>&1 && \
-    yum -y install epel-release wget which file bzip2 openblas-devel libquadmath libmng libpng12 && \
+    yum -y install epel-release wget which file bzip2 openblas-devel libquadmath && \
     yum clean all && \
 
 # install FSL
     wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -O fslinstaller.py > /dev/null 2>&1 && \
-    python fslinstaller.py -V 6.0.1 -d `pwd`/fsl-6.0.1-centos7 -p > /dev/null 2>&1 
+    python fslinstaller.py -V 5.0.11 -d `pwd`/fsl-5.0.11-centos7 -p -q 
 
 # setup FSL environment
-ENV FSLDIR="$PWD/fsl-6.0.1-centos7"
+ENV FSLDIR="$PWD/fsl-5.0.11-centos7"
 ENV PATH="$FSLDIR/bin/:$PATH" \
 	FSLMULTIFILEQUIT=TRUE \
 	FSLGECUDAQ=cuda.q \
@@ -29,9 +29,7 @@ ENV PATH="$FSLDIR/bin/:$PATH" \
 
 
 # apply patch
-RUN rm -rf $FSLDIR/fslpython && \
-    $FSLDIR/etc/fslconf/fslpython_install.sh -f $FSLDIR && \
-    $FSLDIR/fslpython/bin/conda install -y -n fslpython -c conda-forge deprecation==1.* && \
+RUN $FSLDIR/fslpython/bin/conda install -y -n fslpython -c conda-forge deprecation==1.* > /dev/null 2>&1 && \
 
 # install python
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda3-latest-Linux-x86_64.sh > /dev/null 2>&1 && \
@@ -59,5 +57,5 @@ RUN yum -y install git bc unzip gcc && \
     /bin/bash tbss/install.sh setup && \
 
 # run tests
-    bin/bash tbss/install.sh test
+    /bin/bash tbss/install.sh test
 
