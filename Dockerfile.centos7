@@ -12,6 +12,7 @@ ENV PWD="$CWD"
 # libraries and commands for FSL
 RUN yum -y update > /dev/null 2>&1 && \
     yum -y install epel-release wget which file bzip2 openblas-devel libquadmath libmng libpng12 && \
+    yum clean all && \
 
 # install FSL
     wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -O fslinstaller.py > /dev/null 2>&1 && \
@@ -49,6 +50,7 @@ ENV ANTSPATH="$PWD/miniconda3/bin/"
 
 # libraries and commands for TBSS
 RUN yum -y install git bc unzip gcc && \
+    yum clean all && \
 
 # clone TBSS
     git clone https://github.com/pnlbwh/tbss.git && \
