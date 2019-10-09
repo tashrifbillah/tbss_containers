@@ -23,4 +23,4 @@ steps:
     docker build -t $(imageName) -f Dockerfile.centos7 --build-arg USER=$(user) --build-arg CWD=$(wd) .
     # docker run --rm -ti $(imageName) /tbss/install.sh test
   displayName: 'Build a docker image'
-
+  timeoutInMinutes: 120
