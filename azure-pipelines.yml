@@ -3,24 +3,25 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- master
-
-pr:
-- master
-
-pool:
-  vmImage: 'ubuntu-latest'
-
-variables:
-  dockerId: tbillah
-  imageName: fsl_tbss
-  user: tb571
-  wd: /home
-
-steps:
-- script: |
-    docker build -t $(imageName) -f Dockerfile.centos7 --build-arg USER=$(user) --build-arg CWD=$(wd) .
-  displayName: 'Build a docker image'
+jobs:
+- job: tbss
   timeoutInMinutes: 120
-    
+
+  trigger:
+  - master
+
+  pr:
+  - master
+
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  variables:
+    dockerId: tbillah
+    imageName: fsl_tbss
+    user: tb571
+    wd: /home
+
+  steps:
+  - script: docker build -t $(imageName) -f Dockerfile.centos7 --build-arg USER=$(user) --build-arg CWD=$(wd) .
+    displayName: 'Build a docker image'
