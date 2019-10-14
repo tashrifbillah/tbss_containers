@@ -53,5 +53,6 @@ RUN yum -y install git bc unzip gcc && \
 # install TBSS
     /bin/bash tbss/install.sh setup && \
 # run tests
-    /bin/bash tbss/install.sh test
+    /bin/bash python -m unittest -v tbss/lib/test_*.py
+    # /bin/bash tbss/install.sh test
 
