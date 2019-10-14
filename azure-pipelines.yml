@@ -25,4 +25,4 @@ jobs:
   steps:
   - script: docker build -t $(imageName) -f Dockerfile.centos7 --build-arg USER=$(user) --build-arg CWD=$(wd) .
     displayName: 'Build a docker image'
-
+    failOnStderr: true

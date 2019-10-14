@@ -14,8 +14,10 @@ RUN yum -y update > /dev/null 2>&1 && \
     yum -y install epel-release wget which file bzip2 openblas-devel libquadmath && \
     yum clean all && \
 # install FSL
+    echo "Downloading FSL installer" && \
     wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -O fslinstaller.py > /dev/null 2>&1 && \
-    python fslinstaller.py -V 5.0.11 -d `pwd`/fsl-5.0.11-centos7 -p 
+    echo "Installing FSL" && \
+    python fslinstaller.py -V 5.0.11 -d `pwd`/fsl-5.0.11-centos7 -p > /dev/null 2>&1
 
 # setup FSL environment
 ENV FSLDIR="$PWD/fsl-5.0.11-centos7"
@@ -28,8 +30,10 @@ ENV PATH="$FSLDIR/bin/:$PATH" \
 
 
 # apply patch
-RUN $FSLDIR/fslpython/bin/conda install -y -n fslpython -c conda-forge deprecation==1.* && \
+RUN echo "Installing FSL patch" && \
+    $FSLDIR/fslpython/bin/conda install -y -n fslpython -c conda-forge deprecation==1.* > /dev/null 2>&1 && \
 # install python
+    echo "Downloading miniconda3 installer" && \
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda3-latest-Linux-x86_64.sh > /dev/null 2>&1 && \
     /bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p miniconda3/
 
@@ -53,6 +57,6 @@ RUN yum -y install git bc unzip gcc && \
 # install TBSS
     /bin/bash tbss/install.sh setup && \
 # run tests
-    /bin/bash python -m unittest -v tbss/lib/test_*.py
+    python -m unittest -v tbss/lib/test_*.py
     # /bin/bash tbss/install.sh test
 
