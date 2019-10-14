@@ -57,6 +57,13 @@ RUN yum -y install git bc unzip gcc && \
 # install TBSS
     /bin/bash tbss/install.sh setup && \
 # run tests
-    python -m unittest -v tbss/lib/tests/test_*.py
+    $libDir/tbss_all -i $IMAGELIST --generate \
+    -c $CASELIST \
+    --modality FA,MD,AD,RD --enigma \
+    --avg -o $testDir/enigmaTemplateOutput/ \
+    --ncpu -1 --force && echo --enigma branch execution successful \
+    || echo --enigma branch execution FAILED && \
+    cp -a tbss/lib/tests/enigmaTemplateOutput tbss/lib/tests/studyTemplateOutput && \
+    python -m unittest -v tbss/lib/tests/test_fmrib.py
     # /bin/bash tbss/install.sh test
 
