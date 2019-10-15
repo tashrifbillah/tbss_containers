@@ -57,8 +57,8 @@ RUN yum -y install git bc unzip gcc && \
 # install TBSS
     /bin/bash tbss/install.sh setup && \
 # run tests
-    $libDir/tbss_all -i $IMAGELIST --generate \
-    -c $CASELIST \
+    tbss/lib/tbss_all -i tbss/lib/tests/data/imagelist.txt --generate \
+    -c tbss/lib/tests/data/caselist.txt \
     --modality FA,MD,AD,RD --enigma \
     --avg -o $testDir/enigmaTemplateOutput/ \
     --ncpu -1 --force && echo --enigma branch execution successful \
