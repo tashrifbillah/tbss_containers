@@ -53,7 +53,7 @@ ENV ANTSPATH="$PWD/miniconda3/bin/"
 RUN yum -y install git bc unzip gcc && \
     yum clean all && \
 # clone TBSS
-    git clone https://github.com/tashrifbillah/tbss.git && git checkout custom-test && \
+    git clone https://github.com/tashrifbillah/tbss.git && cd tbss && git checkout custom-test && cd .. && \
 # install TBSS
     /bin/bash tbss/install.sh setup && \
 # run tests
