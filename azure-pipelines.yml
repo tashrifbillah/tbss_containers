@@ -23,6 +23,8 @@ jobs:
     wd: /home
 
   steps:
-  - script: docker build -t $(imageName) -f Dockerfile.centos7 --build-arg USER=$(user) --build-arg CWD=$(wd) .
+  - script: |
+        docker build -t $(imageName) -f Dockerfile.centos7 --build-arg USER=$(user) --build-arg CWD=$(wd) .
+        docker run --rm $(imageName) /root/tbss/install.sh test    
     displayName: 'Build a docker image'
     failOnStderr: true
