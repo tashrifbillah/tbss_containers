@@ -17,45 +17,41 @@ RUN yum -y update > /dev/null 2>&1 && \
     echo "Downloading FSL installer" && \
     wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -O fslinstaller.py > /dev/null 2>&1 && \
     echo "Installing FSL" && \
-    python fslinstaller.py -V 5.0.11 -d `pwd`/fsl-5.0.11-centos7 -p > /dev/null 2>&1
-
+    python fslinstaller.py -V 5.0.11 -d `pwd`/fsl-5.0.11-centos7 -p > /dev/null 2>&1 && \
 # setup FSL environment
-ENV FSLDIR="$PWD/fsl-5.0.11-centos7"
-ENV PATH="$FSLDIR/bin/:$PATH" \
-	FSLMULTIFILEQUIT=TRUE \
-	FSLGECUDAQ=cuda.q \
-	FSLTCLSH="$FSLDIR/bin/fsltclsh" \
-	FSLWISH="$FSLDIR/bin/fslwish" \
-	FSLOUTPUTTYPE=NIFTI_GZ
-
-
+    export FSLDIR="$PWD/fsl-5.0.11-centos7" && \
+    echo "export FSLDIR=$PWD/fsl-5.0.11-centos7" >> ~/.bashrc && \
+    export PATH="$FSLDIR/bin/:$PATH" && \
+    echo "export PATH=\$FSLDIR/bin/:\$PATH" >> ~/.bashrc && \
+    source $FSLDIR/etc/fslconf/fsl.sh && \
+    echo "source $FSLDIR/etc/fslconf/fsl.sh" >> ~/.bashrc && \
 # apply patch
-RUN echo "Installing FSL patch" && \
+    echo "Installing FSL patch" && \
     $FSLDIR/fslpython/bin/conda install -y -n fslpython -c conda-forge deprecation==1.* > /dev/null 2>&1 && \
+    $FSLDIR/fslpython/bin/conda clean --all && \
+    rm -f fslinstaller.py && \
 # install python
     echo "Downloading miniconda3 installer" && \
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda3-latest-Linux-x86_64.sh > /dev/null 2>&1 && \
-    /bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p miniconda3/
-
-
-ENV CONDA_EXE="$PWD/miniconda3/bin/conda" \
-	CONDA_PREFIX="$PWD/miniconda3" \
-	CONDA_PYTHON_EXE="$PWD/miniconda3/bin/python" \
-	PATH="$PWD/miniconda3/bin/:$PATH"
-
-
+    /bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p miniconda3/ && \
+    rm -f Miniconda3-latest-Linux-x86_64.sh && \
+    source miniconda3/bin/activate && \
+    echo "source $PWD/miniconda3/bin/activate" >> ~/.bashrc && \
 # install ANTs=2.3.0
-RUN conda install -y -c pnlbwh ants
-ENV ANTSPATH="$PWD/miniconda3/bin/"
-
-
+    conda install -y -c pnlbwh ants && \
+    export ANTSPATH="$PWD/miniconda3/bin/" && \
+    echo "export ANTSPATH=$PWD/miniconda3/bin/" >> ~/.bashrc && \
 # libraries and commands for TBSS
-RUN yum -y install git bc unzip gcc && \
+    yum -y install git bc unzip gcc && \
     yum clean all && \
 # clone TBSS
-    git clone https://github.com/tashrifbillah/tbss.git && cd tbss && git checkout custom-test && cd .. && \
+    git clone https://github.com/pnlbwh/tbss.git && \
 # install TBSS
     /bin/bash tbss/install.sh setup && \
-# run tests
-    /bin/bash tbss/install.sh test
+# clear cache
+    conda clean --all && rm -rf ~/.cache/pip/* && \
+# define alias
+    echo "alias ls=\"ls --color\"" >> ~/.bashrc && \
+# clean up redundant files
+    cd $FSLDIR/ && rm -rf doc/ refdoc/ src/ extras/ data/first data/mist data/possum bin/FSLeyes
 
