@@ -55,3 +55,10 @@ RUN yum -y update > /dev/null 2>&1 && \
 # clean up redundant files
     cd $FSLDIR/ && rm -rf doc/ refdoc/ src/ extras/ data/first data/mist data/possum bin/FSLeyes
 
+
+RUN echo '#!/bin/bash' > /startup.sh && \
+    echo 'if [ $# -gt 0 ]; then /bin/bash -c "source ~/.bashrc && $@"; else /bin/bash; fi' >> /startup.sh && \
+    chmod +x /startup.sh
+
+ENTRYPOINT ["/startup.sh"]
+
