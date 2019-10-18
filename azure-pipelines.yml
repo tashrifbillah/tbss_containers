@@ -11,7 +11,7 @@ pr:
 
 jobs:
 - job: tbss
-  timeoutInMinutes: 240
+  timeoutInMinutes: 360
 
   pool:
     vmImage: 'ubuntu-latest'
