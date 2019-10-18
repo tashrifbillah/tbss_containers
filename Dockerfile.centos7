@@ -44,12 +44,14 @@ RUN yum -y update > /dev/null 2>&1 && \
 # libraries and commands for TBSS
     yum -y install git bc unzip gcc && \
     yum clean all && \
+    rm -rf /var/yum/cache/ && \
 # clone TBSS
-    git clone https://github.com/pnlbwh/tbss.git && \
+    # git clone https://github.com/pnlbwh/tbss.git && \
+    git clone https://github.com/tashrifbillah/tbss.git && cd tbss && git checkout custom-test && cd .. && \
 # install TBSS
     /bin/bash tbss/install.sh setup && \
 # clear cache
-    conda clean --all && rm -rf ~/.cache/pip/* && \
+    conda clean -y --all && rm -rf ~/.cache/pip/* && \
 # define alias
     echo "alias ls=\"ls --color\"" >> ~/.bashrc && \
 # clean up redundant files
