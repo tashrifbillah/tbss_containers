@@ -49,6 +49,7 @@ jobs:
 
  
   - script: |
+        docker pull $(imageName)
         $(Agent.BuildDirectory)/container-structure-test-linux-amd64 test --image $(imageName) --config $(Agent.BuildDirectory)/$(testConfigFile)
     displayName: 'Test the docker image'
     failOnStderr: true
