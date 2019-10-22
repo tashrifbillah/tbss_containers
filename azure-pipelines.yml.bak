@@ -47,6 +47,22 @@ jobs:
       Contents: '**/container-structure-test-linux-amd64'
       TargetFolder: '$(Agent.BuildDirectory)'
 
+
+
+  - script: |
+        docker build -t $(imageName) -f Dockerfile.centos7 .
+    displayName: 'Build a docker image'
+    failOnStderr: true
+
+
+  - task: Docker@2
+    displayName: Push image to Docker Hub
+    inputs:
+      command: push
+      containerRegistry: dockerHub
+      repository: $(imageName)
+      tags: 'latest'
+      
  
   - script: |
         $(Agent.BuildDirectory)/container-structure-test-linux-amd64 test --image $(imageName) --config $(Agent.BuildDirectory)/$(testConfigFile)

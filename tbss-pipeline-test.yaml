@@ -5,5 +5,5 @@ commandTests:
     command: "/bin/bash"
     args:
       - -c
-      - source ~/.bashrc && /tbss/install.sh test
+      - source ~/.bashrc && /tbss/install.sh test && pytest /tbss/lib/tests/test_*py
 
