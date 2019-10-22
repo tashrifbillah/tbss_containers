@@ -5,12 +5,8 @@ commandTests:
     command: "/bin/bash"
     args:
       - -c
-      - source ~/.bashrc && /tbss/install.sh test
-      
-commandTests:
-  - name: "Test ENGIMA branch of pnlbwh_tbss"
-    command: "/bin/bash"
-    args:
-      - -c
-      - source ~/.bashrc && pytest /tbss/lib/tests/test_enigma.py
+      - source ~/.bashrc 
+      - /tbss/install.sh test
+      - pytest /tbss/lib/tests/test_enigma.py
+     
 
