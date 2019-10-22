@@ -4,6 +4,7 @@ MAINTAINER Tashrif Billah <tbillah@bwh.harvard.edu>
 
 # set up user and working directory
 WORKDIR /
+ENV USER="root"
 ENV PWD="/"
 
 COPY startup.sh /
