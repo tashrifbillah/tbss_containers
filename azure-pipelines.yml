@@ -10,21 +10,63 @@ pr:
 - master
 
 jobs:
-- job: tbss
-  timeoutInMinutes: 360
+- job: pnlbwh_tbss_pipeline
+  timeoutInMinutes: 240
 
   pool:
     vmImage: 'ubuntu-latest'
 
   variables:
     dockerId: tbillah
-    imageName: fsl_tbss
-    user: tb571
+    imageName: tbillah/fsl_tbss
+    user: pnlbwh
     wd: /home
+    testConfigFile: tbss-pipeline-test.yaml
+
 
   steps:
+  - task: Docker@2
+    displayName: Login to Docker Hub
+    inputs:
+      command: login
+      containerRegistry: dockerHub
+
+
+  - task: CopyFiles@2
+    displayName: 'Copy test configFile'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)'
+      Contents: '**/$(testConfigFile)'
+      TargetFolder: '$(Agent.BuildDirectory)'
+
+  
+  - task: CopyFiles@2
+    displayName: 'Copy container structure test'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)'
+      Contents: '**/container-structure-test-linux-amd64'
+      TargetFolder: '$(Agent.BuildDirectory)'
+
+
+
   - script: |
-        docker build -t $(imageName) -f Dockerfile.centos7 --build-arg USER=$(user) --build-arg CWD=$(wd) .
-        docker run --rm $(imageName) "tbss/install.sh test"
-    displayName: 'Build and test a docker image'
+        docker build -t $(imageName) -f Dockerfile.centos7 .
+    displayName: 'Build a docker image'
     failOnStderr: true
+
+
+  - task: Docker@2
+    displayName: Push image to Docker Hub
+    inputs:
+      command: push
+      containerRegistry: dockerHub
+      repository: $(imageName)
+      tags: 'latest'
+      
+ 
+  - script: |
+        $(Agent.BuildDirectory)/container-structure-test-linux-amd64 test --image $(imageName) --config $(Agent.BuildDirectory)/$(testConfigFile)
+    displayName: 'Test the docker image'
+    failOnStderr: true
+
+
