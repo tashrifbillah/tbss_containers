@@ -36,7 +36,7 @@ jobs:
     displayName: 'Copy test configFile'
     inputs:
       SourceFolder: '$(Build.SourcesDirectory)'
-      Contents: '**/$(testConfigFile)'
+      Contents: '**/$(testConfigFile)/*.yaml'
       TargetFolder: '$(Agent.BuildDirectory)'
 
   
@@ -50,7 +50,7 @@ jobs:
  
   - script: |
         docker pull $(imageName)
-        $(Agent.BuildDirectory)/container-structure-test-linux-amd64 test --image $(imageName) --config $(Agent.BuildDirectory)/$(testConfigFile)
+        $(Agent.BuildDirectory)/container-structure-test-linux-amd64 test --image $(imageName) --config $(Agent.BuildDirectory)/$(testConfigFile) $(Agent.BuildDirectory)/enigma-test.yaml
     displayName: 'Test the docker image'
     failOnStderr: true
 

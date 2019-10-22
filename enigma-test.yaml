@@ -5,6 +5,5 @@ commandTests:
     command: "/bin/bash"
     args:
       - -c
-      - source ~/.bashrc && /tbss/install.sh test
-     
+      - source ~/.bashrc && /tbss/lib/test_engima.py
 
