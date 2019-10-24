@@ -50,13 +50,13 @@ jobs:
     
   - script: |
         sed -i 's/RUN source/# RUN source/g' Dockerfile.centos7
-        docker build -t $(imageName):latest -f Dockerfile.centos7
+        docker build -t $(imageName):latest -f Dockerfile.centos7 .
     displayName: 'Build primary docker image'
     failOnStderr: true
 
   - script: |
         sed -i 's/# RUN source/RUN source/g' Dockerfile.centos7      
-        docker build -t $(imageName):runTest -f Dockerfile.centos7
+        docker build -t $(imageName):runTest -f Dockerfile.centos7 .
     displayName: 'Build secondary docker image using cache'
     failOnStderr: true
     
