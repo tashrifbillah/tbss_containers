@@ -21,7 +21,7 @@ jobs:
     imageName: tbillah/fsl_tbss
     user: pnlbwh
     wd: /home
-    testConfigFile: tbss-pipeline-test.yaml
+    testConfigFile: all-branch-test.yaml
 
 
   steps:
@@ -36,7 +36,7 @@ jobs:
     displayName: 'Copy test configFile'
     inputs:
       SourceFolder: '$(Build.SourcesDirectory)'
-      Contents: '**/*.yaml'
+      Contents: '**/$(testConfigFile)'
       TargetFolder: '$(Agent.BuildDirectory)'
 
   
@@ -46,11 +46,24 @@ jobs:
       SourceFolder: '$(Build.SourcesDirectory)'
       Contents: '**/container-structure-test-linux-amd64'
       TargetFolder: '$(Agent.BuildDirectory)'
+    
+    
+  - script: |
+        sed -i 's/RUN source/# RUN source/g' Dockerfile.centos7
+        docker build -t $(imageName):latest -f Dockerfile.centos7
+    displayName: 'Build primary docker image'
+    failOnStderr: true
 
+  - script: |
+        sed -i 's/# RUN source/RUN source/g' Dockerfile.centos7      
+        docker build -t $(imageName):runTest -f Dockerfile.centos7
+    displayName: 'Build secondary docker image using cache'
+    failOnStderr: true
+    
  
   - script: |
         docker pull $(imageName)
-        $(Agent.BuildDirectory)/container-structure-test-linux-amd64 test --image $(imageName) --config $(Agent.BuildDirectory)/$(testConfigFile) $(Agent.BuildDirectory)/enigma-test.yaml
+        $(Agent.BuildDirectory)/container-structure-test-linux-amd64 test --image $(imageName):runTest --config $(Agent.BuildDirectory)/$(testConfigFile)
     displayName: 'Test the docker image'
     failOnStderr: true
 

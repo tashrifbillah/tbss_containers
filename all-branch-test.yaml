@@ -1,0 +1,21 @@
+schemaVersion: 2.0.0
+
+commandTests:
+  - name: "Run enigma test "
+    command: "/bin/bash"
+    args:
+      - -c
+      - source ~/.bashrc && pytest /tbss/lib/tests/test_enigma.py
+
+  - name: "Run fmrib test "
+    command: "/bin/bash"
+    args:
+      - -c
+      - source ~/.bashrc && pytest /tbss/lib/tests/test_fmrib.py
+
+  - name: "Run study test "
+    command: "/bin/bash"
+    args:
+      - -c
+      - source ~/.bashrc && pytest /tbss/lib/tests/test_study.py
+
