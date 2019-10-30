@@ -46,7 +46,7 @@ RUN yum -y update > /dev/null 2>&1 && \
     yum clean all && \
     rm -rf /var/yum/cache/ && \
 # clone TBSS
-    git clone https://github.com/tashrifbillah/tbss.git && \
+    git clone https://github.com/pnlbwh/tbss.git && \
 # install TBSS
     /bin/bash tbss/install.sh setup && \
 # clear cache
@@ -58,8 +58,8 @@ RUN yum -y update > /dev/null 2>&1 && \
     chmod +x /startup.sh
 
 ## secondary image for testing ##
-# run test and remove redundant test files
-RUN source ~/.bashrc && tbss/install.sh test && cd tbss/lib/tests/ && for i in `find . -type f \( ! -iname "*combined_roi_avg.csv" -a ! -iname "*py" \)`; do rm $i; done
+# disable unittest within install.sh script, run pipeline, and remove redundant test files
+RUN source ~/.bashrc && sed -i "s/pytest -v/# pytest -v/g" tbss/install.sh && tbss/install.sh test && cd tbss/lib/tests/ && for i in `find . -type f \( ! -iname "*combined_roi_avg.csv" -a ! -iname "*py" \)`; do rm $i; done
     
 
 ENTRYPOINT ["/startup.sh"]

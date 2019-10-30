@@ -22,6 +22,7 @@ jobs:
     user: pnlbwh
     wd: /home
     testConfigFile: all-branch-test.yaml
+    imageTag: 0.1
 
 
   steps:
@@ -39,20 +40,13 @@ jobs:
       Contents: '**/$(testConfigFile)'
       TargetFolder: '$(Agent.BuildDirectory)'
 
-  
-  - task: CopyFiles@2
-    displayName: 'Copy container structure test'
-    inputs:
-      SourceFolder: '$(Build.SourcesDirectory)'
-      Contents: '**/container-structure-test-linux-amd64'
-      TargetFolder: '$(Agent.BuildDirectory)'
-    
-    
+
   - script: |
         sed -i 's/RUN source/# RUN source/g' Dockerfile.centos7
-        docker build -t $(imageName):latest -f Dockerfile.centos7 .
+        docker build -t $(imageName):latest -t $(imageName):$(imageTag) -f Dockerfile.centos7 .
     displayName: 'Build primary docker image'
     failOnStderr: true
+
 
   - script: |
         sed -i 's/# RUN source/RUN source/g' Dockerfile.centos7      
@@ -62,7 +56,16 @@ jobs:
     
  
   - script: |
-        $(Agent.BuildDirectory)/container-structure-test-linux-amd64 test --image $(imageName):runTest --config $(Agent.BuildDirectory)/$(testConfigFile)
+        curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+        chmod +x container-structure-test-linux-amd64
+        container-structure-test-linux-amd64 test --image $(imageName):runTest --config $(Agent.BuildDirectory)/$(testConfigFile)
     displayName: 'Test the docker image'
     failOnStderr: true
+    
 
+  - script: |
+        docker push -t $(imageName):latest -t $(imageName):$(imageTag)
+    displayName: 'Push the docker image'
+    failOnStderr: true
+  
+    
