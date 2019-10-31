@@ -58,7 +58,7 @@ jobs:
   - script: |
         curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
         chmod +x container-structure-test-linux-amd64
-        container-structure-test-linux-amd64 test --image $(imageName):runTest --config $(Agent.BuildDirectory)/$(testConfigFile)
+        ./container-structure-test-linux-amd64 test --image $(imageName):runTest --config $(Agent.BuildDirectory)/$(testConfigFile)
     displayName: 'Test the docker image'
     failOnStderr: true
     
