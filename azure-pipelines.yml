@@ -64,7 +64,7 @@ jobs:
     
 
   - script: |
-        docker push -t $(imageName):latest -t $(imageName):$(imageTag)
+        docker push $(imageName):latest $(imageName):$(imageTag)
     displayName: 'Push the docker image'
     failOnStderr: true
   

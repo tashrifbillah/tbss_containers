@@ -46,8 +46,7 @@ RUN yum -y update > /dev/null 2>&1 && \
     yum clean all && \
     rm -rf /var/yum/cache/ && \
 # clone TBSS
-    # git clone https://github.com/pnlbwh/tbss.git && \
-    git clone  --single-branch --branch less-args-nonFA https://github.com/pnlbwh/tbss.git && \
+    git clone --single-branch --branch master https://github.com/pnlbwh/tbss.git && \
 # install TBSS
     /bin/bash tbss/install.sh setup && \
 # clear cache
