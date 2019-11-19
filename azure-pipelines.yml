@@ -22,7 +22,7 @@ jobs:
     user: pnlbwh
     wd: /home
     testConfigFile: all-branch-test.yaml
-    imageTag: 0.1
+    imageTag: 0.1.4
 
 
   steps:
